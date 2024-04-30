@@ -4,11 +4,12 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function Cameras() {
+function Cameras({ set }) {
   const webcamRef = useRef(null);
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
+    console.log(imageSrc);
     sendImageToServer(imageSrc);
   }, [webcamRef]);
 
@@ -74,6 +75,12 @@ function Cameras() {
         onClick={capture}
       >
         Take photo
+      </button>
+      <button
+        className="h-12 rounded-xl transition ease-in-out delay-150 bg-blue-900 text-[#fff] hover:-translate-y-1 hover:scale-110 hover:bg-[#1e263a]"
+        onClick={(e) => set(true)}
+      >
+        upload photo
       </button>
     </div>
   );
