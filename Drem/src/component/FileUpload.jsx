@@ -5,12 +5,15 @@ import "react-toastify/dist/ReactToastify.css";
 
 const FileUpload = ({ set }) => {
   const [file, setFile] = useState();
+  const [preview, setPreview] = useState();
+  const [result, setResult] = useState();
 
   const handleChange = async (e) => {
     e.preventDefault();
     try {
       console.log(e.target.files[0]);
       setFile(e.target.files[0]);
+      setPreview(URL.createObjectURL(e.target.files[0]));
     } catch (err) {
       console.log("Error: " + err);
     }
@@ -24,6 +27,7 @@ const FileUpload = ({ set }) => {
         formData.append("image", file);
         const { data } = await axios.post(`http://localhost:2000/`, formData);
         toast.info("Result: " + data.predicted);
+        setResult(data.predicted);
       } catch (error) {
         console.error("Error sending image to server:", error);
       }
@@ -34,7 +38,7 @@ const FileUpload = ({ set }) => {
     <div className="flex justify-center flex-col w-1/2">
       <div className="border-8 rounded-xl border-blue-900">
         <div className="flex items-center justify-center w-full">
-          <label
+          {preview ? <img src={preview} className=" w-2/4 h-2/4" alt="upload image" /> : <label
             for="dropzone-file"
             className="flex flex-col items-center justify-center w-full h-64 border-2"
           >
@@ -55,8 +59,7 @@ const FileUpload = ({ set }) => {
                 />
               </svg>
               <p className="mb-2 text-sm text-blue-900">
-                {file ? <div>{file.name}</div>:<div><span className="font-semibold">Click to upload</span> or drag and
-                drop</div>}
+                <div><span className="font-semibold">Click to upload</span> or drag and drop</div>
               </p>
             </div>
             <input
@@ -65,7 +68,7 @@ const FileUpload = ({ set }) => {
               className="hidden"
               onChange={handleChange}
             />
-          </label>
+          </label>}
         </div>
       </div>
       <button
@@ -81,6 +84,9 @@ const FileUpload = ({ set }) => {
       >
         Take Picture
       </button>
+      <div className="border-2 rounded-xl border-blue-900 mt-4 border-dashed p-5">
+        Result: {result ? <span className=" text-lime-900 font-bold">{result}</span>:<span>Check yourself</span>}
+      </div>
     </div>
   );
 };

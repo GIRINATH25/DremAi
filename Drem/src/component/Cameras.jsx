@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Cameras({ set }) {
   const webcamRef = useRef(null);
+  const [result, setResult] = useState();
 
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
@@ -20,6 +21,7 @@ function Cameras({ set }) {
         formData.append("image", dataURLtoFile(imageSrc, "image.jpg"));
         const { data } = await axios.post(`http://localhost:2000/`, formData);
         toast.info("Result: " + data.predicted);
+        setResult(data.predicted);  
       } catch (error) {
         console.error("Error sending image to server:", error);
       }
@@ -82,6 +84,9 @@ function Cameras({ set }) {
       >
         upload photo
       </button>
+      <div className="border-2 rounded-xl border-blue-900 mt-4 border-dashed p-5">
+        Result: {result ? <span className=" text-lime-900 font-bold">{result}</span>:<span>Check yourself</span>}
+      </div>
     </div>
   );
 }
